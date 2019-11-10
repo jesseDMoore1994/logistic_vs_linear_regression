@@ -10,7 +10,7 @@ import logging
 from pprint import PrettyPrinter
 pp = PrettyPrinter(indent=4)
 
-HOURS_STUDIED = [ .5, .75, 1, 1.25, 1.5, 1.75, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 4, 4.25, 4.5, 4.75, 5, 5]
+HOURS_STUDIED = [ .5, .75, 1, 1.25, 1.5, 1.75, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 4, 4.25, 4.5, 4.75, 5, 5.5]
 FAIL_PASS = [ 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1]
 
 
@@ -68,7 +68,7 @@ class LinearRegression():
 
 
     def fit(self):
-        print(f'Performing gradient descent for linear regression till cost diff < {self.convergence}')
+        print(f'Performing gradient descent for linear regression with learning rate {self.learning_rate} till cost difference < {self.convergence}')
         while np.sqrt(np.square(self.cost_diff)) > self.convergence:
             self.update()
 
@@ -85,6 +85,13 @@ class LinearRegression():
 
             self.last_cost = cost
             self.iteration_counter = self.iteration_counter + 1
+
+        print(f'iteration: {self.iteration_counter}')
+        print(f'cost: {cost}')
+        print(f'v0: {self.v0}')
+        print(f'v1: {self.v1}')
+        self.iteration_no.append(self.iteration_counter)
+        self.cost_for_iter.append(cost)
 
         output_values = {
             'v1': self.v1,
@@ -130,9 +137,10 @@ def create_simple_linear_regression_plots():
     plt.figure()
     plt.plot(scatter_data['x'], scatter_data['y'], '.')
     plt.plot(regression_line_data['x'], regression_line_data['y'], 'b-', label='simple linear regression')
-    plt.xlabel('x')
-    plt.ylabel('y')
+    plt.xlabel('Hours Studied')
+    plt.ylabel('Result: 1-pass 0-fail')
     plt.legend(loc='upper left')
+    plt.xticks(np.arange(0, 7))
     plt.savefig('simple_linear_regression.png')
     plt.figure()
     plt.plot(cost_per_iter_line_data['x'], cost_per_iter_line_data['y'], 'b-', label='Cost for iteration')
@@ -148,7 +156,6 @@ class LogisticRegression:
         self.convergence = convergence
         self.X = X
         self.T = T
-        print(self.X)
         self.v0 = np.random.rand()
         self.v1 = np.random.rand()
         self.cost_diff = 1
@@ -194,7 +201,7 @@ class LogisticRegression:
         self.v1 = self.v1 - (self.learning_rate * (d_dv1 / len(self.X)))
 
     def fit(self):
-        print(f'Performing gradient descent for logistic regression till cost diff < {self.convergence}')
+        print(f'Performing gradient descent for logistic regression with learning rate {self.learning_rate} till cost difference < {self.convergence}')
         while np.sqrt(np.square(self.cost_diff)) > self.convergence:
             self.update()
 
@@ -209,6 +216,13 @@ class LogisticRegression:
 
             self.last_cost = cost
             self.iteration_counter = self.iteration_counter + 1
+
+        print(f'iteration: {self.iteration_counter}')
+        print(f'cost: {cost}')
+        print(f'v0: {self.v0}')
+        print(f'v1: {self.v1}')
+        self.iteration_no.append(self.iteration_counter)
+        self.cost_for_iter.append(cost)
 
         output_values = {
             'v0': self.v0,
@@ -260,9 +274,10 @@ def create_logistic_regression_plots():
     plt.figure()
     plt.plot(scatter_data['x'], scatter_data['y'], '.')
     plt.plot(regression_line_data['x'], regression_line_data['y'], 'b-', label='logistic regression')
-    plt.xlabel('x')
-    plt.ylabel('y')
+    plt.xlabel('Hours Studied')
+    plt.ylabel('Result: 1-pass 0-fail')
     plt.legend(loc='upper left')
+    plt.xticks(np.arange(0, 7))
     plt.savefig('logistic_regression.png')
     plt.figure()
     plt.plot(cost_per_iter_line_data['x'], cost_per_iter_line_data['y'], 'b-', label='Cost for iteration')
